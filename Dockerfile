@@ -7,6 +7,7 @@ MAINTAINER Keith Berry "keithwberry@gmail.com"
 WORKDIR /usr/src/app
 
 ADD https://github.com/berryk/mqtt-scripts-scripts/archive/master.tar.gz .
+RUN gunzip -c master.tar.gz | tar xvf -
 
 RUN npm install -g wake_on_lan
 
