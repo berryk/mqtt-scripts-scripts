@@ -1,24 +1,21 @@
 var WebSocket = require('ws');
 var wol = require('wake_on_lan');
 
-// 192.168.1.142 = Family Room
-// 192.168.1.208 = Basement 
-
 var app_name_base64 = (new Buffer("MQTT-TV")).toString('base64');
 
 var tv = {
-    "family_room": { "ip": "192.168.1.142", "mac": "CC:B1:1A:56:02:17", "state": "off", "network": "off", "name": "family_room" },
-    "basement": { "ip": "192.168.1.208", "mac": "CC:B1:1A:56:02:13", "state": "off", "network": "off", "name": "basement" },
+    "family_room": { "ip": "family-room-tv.lan", "mac": "CC:B1:1A:56:02:17", "state": "off", "network": "off", "name": "family_room" },
+    "basement": { "ip": "basement-tv.lan", "mac": "CC:B1:1A:56:02:13", "state": "off", "network": "off", "name": "basement" },
 };
 
 var ip = {
-    "192.168.1.142": "family_room",
-    "192.168.1.208": "basement"
+    "family-room-tv.lan": "family",
+    "basement-tv.lan": "basement"
 };
 
 
 var PORT = 1900;
-var HOST = '192.168.1.241'; //This is your local IP
+var HOST = 'nuc.lan'; //This is your local IP
 var dgram = require('dgram');
 var client = dgram.createSocket('udp4');
 
