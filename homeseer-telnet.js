@@ -2,7 +2,7 @@ var net = require('net');
 var command;
 var devices = new Array();
 var topics = new Array();
-var socket = net.createConnection(11000, 'localhost');
+var socket = net.createConnection(11000, 'mqtt.lan');
 log.info('Socket created.');
 
 socket.on('data', function(data) {
