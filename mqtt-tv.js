@@ -9,8 +9,8 @@ var tv = {
 };
 
 var ip = {
-    "family-room-tv.lan": "family",
-    "basement-tv.lan": "basement"
+    "192.168.1.203": "family",
+    "192.168.1.205": "basement"
 };
 
 
