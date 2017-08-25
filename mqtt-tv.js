@@ -15,7 +15,7 @@ var ip = {
 
 
 var PORT = 1900;
-var HOST = 'nuc.lan'; //This is your local IP
+var HOST = '0.0.0.0'; //This is your local IP
 var dgram = require('dgram');
 var client = dgram.createSocket('udp4');
 
