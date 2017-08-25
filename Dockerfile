@@ -13,4 +13,4 @@ RUN npm install -g wake_on_lan
 
 WORKDIR /usr/src/app/mqtt-scripts-scripts-master
 
-CMD [ "/usr/local/lib/node_modules/mqtt-scripts/index.js", "-d", "." ]
+CMD [ "/usr/local/lib/node_modules/mqtt-scripts/index.js", "-d", "-u mqtt://mqtt.lan", "."]
