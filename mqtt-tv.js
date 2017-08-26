@@ -37,7 +37,7 @@ client.on('message', function(msg, remote) {
     var screenoff = 'urn:samsung.com:device:ScreenSharing:1';
 
     if (msg.indexOf(samsungurn) != -1) {
-        //log.info('Found samsung device');
+        log.info('Found samsung device ip:',remote.address);
 
         var tvname = ip[remote.address];
 
