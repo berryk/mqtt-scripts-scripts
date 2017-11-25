@@ -33,7 +33,7 @@ client.on('message', function(msg, remote) {
 
     //  " urn:samsung.com:device:SmartThingsTvDevice:1" = Network going off
     //  " urn:samsung.com:device:ScreenSharing:1" = Screen going off - network still on
-    var networkoff = 'urn:samsung.com:device:SmartThingsTvDevice:1';
+    var networkoff = 'urn:samsung.com:device:RemoteControlReceiver:1';
     var screenoff = 'urn:samsung.com:device:ScreenSharing:1';
 
     if (msg.indexOf(samsungurn) != -1) {
