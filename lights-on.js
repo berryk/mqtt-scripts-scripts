@@ -21,6 +21,9 @@ function setStatus(path, value) {
     }
 }
 
+// Need to add a status mode perhaps every hour where status is checked and totals reset
+// This should also update overall counts
+
 subscribe('homeseer/Lights/#', function(topic, val) {
     log.info(topic + ':' + val)
 
@@ -30,7 +33,7 @@ subscribe('homeseer/Lights/#', function(topic, val) {
 
         if (topic in status) {
 
-            if (status[topic] == 0) {
+            if (status[topic] === 0) {
                 status[topic] = val;
                 if (val > 0) {
                     count[fields[2]] = count[fields[2]] + 1;
@@ -41,20 +44,21 @@ subscribe('homeseer/Lights/#', function(topic, val) {
             } else {
                 // val was > 0 before 
                 status[topic] = val;
-                if (val == 0) {
+                if (val === 0) {
                     count[fields[2]] = count[fields[2]] - 1;
                     log.info(fields[2] + ' lights on: ' + count[fields[2]]);
                     // insert logic here 
-                    if (count[fields[2]] == 0) {
+                    if (count[fields[2]] === 0) {
                         setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 0);
 
                         // count total lights on
                         var totalOn = 0;
-                        for (i in count) {
+                        for (var i in count) {
                             totalOn = totalOn + count[i];
                         }
+                        log.info('Total lights on:' + totalOn)
 
-                        if (totalOn == 0) {
+                        if ( totalOn === 0) {
                             setStatus('homeseer/House/House/All Off House/set', 0);
                         }
                     }
@@ -89,10 +93,10 @@ function switchoff(path) {
 
 subscribe('homeseer/-/Bedroom/Master Bedroom Cans - Button D', function(topic, val) {
     log.info(topic + ':' + val);
-    if (val == 0) {
+    if (val === 0) {
         log.info("All off lights pressed, switching off all on lights");
         var pause = 100;
-        for (i in status) {
+        for (var i in status) {
             if (status[i] > 0) {
                 log.info("Scheduling off for:" + i);
                 setTimeout(switchoff, pause, i);

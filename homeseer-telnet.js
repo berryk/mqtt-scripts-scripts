@@ -1,7 +1,7 @@
 var net = require('net');
 var command;
-var devices = new Array();
-var topics = new Array();
+var devices = [];
+var topics = [];
 var socket = net.createConnection(11000, 'mqtt.lan');
 log.info('Socket created.');
 
@@ -53,6 +53,8 @@ socket.on('data', function(data) {
 }).on('end', function() {
     log.info('DONE');
 });
+
+// Need to add error handling here 
 
 subscribe('homeseer/+/+/+/set', function(topic, val) {
     log.info(topic + ':' + val);
