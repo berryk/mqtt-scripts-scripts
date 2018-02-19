@@ -69,7 +69,7 @@ function connect() {
 }
 
 // Every hour rerun the gs command
-schedule('*/25 * * * *', function(){
+schedule('*/10 * * * *', function(){
   log.info('Getting full homeseer status');
   command = "gs";
   socket.write(command + "\r\n", function(err) {

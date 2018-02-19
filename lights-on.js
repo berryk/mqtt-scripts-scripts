@@ -46,23 +46,32 @@ subscribe('homeseer/Lights/#', function(topic, val) {
                 if (val === 0) {
                     count[fields[2]] = count[fields[2]] - 1;
                     log.info(fields[2] + ' lights on: ' + count[fields[2]]);
+                 
+                    // count total lights on
+                    var totalOn = 0;
+                    for (var i in count) {
+                      totalOn = totalOn + count[i];
+                    }
+                    log.info('Total lights on:' + totalOn)
+                    
                     // insert logic here 
                     if (count[fields[2]] === 0) {
                         setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 0);
 
                         // count total lights on
-                        var totalOn = 0;
-                        for (var i in count) {
-                            totalOn = totalOn + count[i];
-                        }
-                        log.info('Total lights on:' + totalOn)
+//                         var totalOn = 0;
+//                         for (var i in count) {
+//                             totalOn = totalOn + count[i];
+//                         }
+//                         log.info('Total lights on:' + totalOn)
+                      
+                    }
 
-                        if ( totalOn === 0) {
+                    if ( totalOn === 0) {
                             setStatus('homeseer/House/House/All Off House/set', 0);
-                        }
                     }
                 } else {
-                    log.info('No change' + fields[2] + ' lights on: ' + count[fields[2]]);
+                    log.info('No change' + fields[2] + '\n' + 'lights on: ' + count[fields[2]]);
                 }
             }
 
@@ -92,6 +101,9 @@ subscribe('homeseer/status',function(topic, val) {
       "Basement": 0,
       "Outside": 0,
     };
+  
+    alloffstatus = {};
+    status = {};
     
 });
 
