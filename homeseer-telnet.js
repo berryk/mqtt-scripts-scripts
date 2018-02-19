@@ -45,11 +45,10 @@ socket.on('data', function(data) {
 }).on('connect', function() {
     log.info('CONNECTED');
     command = "au,default,default";
-    socket.write(command + "\r\n", function(err) {
-        log.info("Err:" + err);
+    socket.write(command + "\r\n", function(){
         command = "gs";
-        socket.write(command + "\r\n", function(err) {
-            log.info("Err:" + err);
+        socket.write(command + "\r\n", function() {
+            log.info("gs\n");
         });
     });
 
