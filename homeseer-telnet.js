@@ -29,9 +29,12 @@ function connect() {
     if (command == "gs" && data != "ok\r\n") {
       command = "";
       //send a message to reset counters
-      setValue("homeseer/status", "reset")
+
       var devicedefns = data.toString().split("|");
-      for (var i = 0, len = devicedefns.length; i < len; i++) {
+      var len = devicedefns.length; 
+      setValue("homeseer/status", len);
+      
+      for (var i = 0; i < len; i++) {
         var device = devicedefns[i];
         device = device.replace(/\//g, '-');
         device = device.replace(/,,/g, ',-,');

@@ -5,26 +5,37 @@ var count = {
   "Outside": 0,
 };
 
+var devices;
+var device_count;
 var alloffstatus = {};
 
 var status = {};
 
 function setStatus(path, value) {
+
   if (path in alloffstatus) {
     if (value != alloffstatus[path]) {
       alloffstatus[path] = value;
-      setValue(path, value);
+      if (device_count >= devices) {
+        setValue(path, value);
+      }
     }
   } else {
     alloffstatus[path] = value;
-    setValue(path, value);
+    if (device_count >= devices) {
+      setValue(path, value);
+    }
   }
+
+
 }
 
 
 
 subscribe('homeseer/Lights/#', function(topic, val) {
   log.info(topic + ':' + val)
+
+  device_count = device_count + 1;
 
   var fields = topic.split("/");
 
@@ -40,8 +51,8 @@ subscribe('homeseer/Lights/#', function(topic, val) {
         if (val > 0) {
           count[fields[2]] = count[fields[2]] + 1;
           setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 100);
-        }}
-      else {
+        }
+      } else {
         // val was > 0 before 
         status[topic] = val;
         // But it is 0 now
@@ -70,22 +81,32 @@ subscribe('homeseer/Lights/#', function(topic, val) {
           setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 0);
         }
       }
+
+
+
+      log.info(fields[2] + ' lights on: ' + count[fields[2]]);
+      // count total lights on
+      var totalOn = 0;
+      for (var i in count) {
+        totalOn = totalOn + count[i];
+      }
+      log.info('Total lights on:' + totalOn)
+
+      if (totalOn === 0) {
+        setStatus('homeseer/House/House/All Off House/set', 0);
+      } else {
+        setStatus('homeseer/House/House/All Off House/set', 100);
+      }
     }
 
-    log.info(fields[2] + ' lights on: ' + count[fields[2]]);
-    // count total lights on
-    var totalOn = 0;
-    for (var i in count) {
-      totalOn = totalOn + count[i];
-    }
-    log.info('Total lights on:' + totalOn)
+  }
 
-    if (totalOn === 0) {
-      setStatus('homeseer/House/House/All Off House/set', 0);
-    } else {
-      setStatus('homeseer/House/House/All Off House/set', 100);
+  if (device_count == devices) {
+    for (var path in alloffstatus) {
+      setStatus(path, alloffstatus[path]);
     }
   }
+
 });
 
 // Need to add a status mode perhaps every hour where status is checked and totals reset
@@ -93,6 +114,10 @@ subscribe('homeseer/Lights/#', function(topic, val) {
 
 subscribe('homeseer/status', function(topic, val) {
   log.info(topic + ':' + val);
+
+  devices = val;
+  device_count = 0;
+
   log.info("Resetting counters for full status");
   count = {
     "Downstairs": 0,
@@ -100,6 +125,8 @@ subscribe('homeseer/status', function(topic, val) {
     "Basement": 0,
     "Outside": 0,
   };
+
+  // could set a flag here that indicates it is a status run and only updates statuses when complete
 
   //alloffstatus = {};
   status = {};
@@ -128,7 +155,7 @@ subscribe('homeseer/-/Bedroom/Master Bedroom Cans - Button D', function(topic, v
         pause = pause + 100;
       }
     }
-    
+
     setValue('MusicCast/basement/power/set', 'standby');
     setValue('MusicCast/dining_room/power/set', 'standby');
     setValue('MusicCast/kitchen/power/set', 'standby');
