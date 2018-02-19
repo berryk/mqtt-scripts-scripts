@@ -3,6 +3,7 @@ var count = {
   "Upstairs": 0,
   "Basement": 0,
   "Outside": 0,
+  "Bedroom": 0,
 };
 
 var devices;
@@ -26,8 +27,6 @@ function setStatus(path, value) {
       setValue(path, value);
     }
   }
-
-
 }
 
 
@@ -91,19 +90,31 @@ subscribe('homeseer/Lights/#', function(topic, val) {
         totalOn = totalOn + count[i];
       }
       log.info('Total lights on:' + totalOn)
+      
+      // excluding bedroom 
+      var totalNoBedroom = totalOn - count.Bedroom;
+      log.info('Total No Bedroom on:' + totalNoBedroom); 
 
       if (totalOn === 0) {
         setStatus('homeseer/House/House/All Off House/set', 0);
       } else {
         setStatus('homeseer/House/House/All Off House/set', 100);
       }
+      
+      if (totalNoBedroom === 0) {
+        setStatus('homeseer/House/House/All Off No Bedroom/set', 0);
+      } else {
+        setStatus('homeseer/House/House/All Off No Bedroom/set', 100);
+      }
     }
 
   }
 
   if (device_count == devices) {
+    var pause = 100;
     for (var path in alloffstatus) {
-      setStatus(path, alloffstatus[path]);
+      setTimeout(setStatus, pause, path, alloffstatus[path]);
+      pause = pause + 100; 
     }
   }
 
@@ -124,6 +135,7 @@ subscribe('homeseer/status', function(topic, val) {
     "Upstairs": 0,
     "Basement": 0,
     "Outside": 0,
+    "Bedroom": 0,
   };
 
   // could set a flag here that indicates it is a status run and only updates statuses when complete
@@ -133,7 +145,7 @@ subscribe('homeseer/status', function(topic, val) {
 
 });
 
-subscribe('homeseer/House/House/All Off House/set', function(topic, val) {
+subscribe('homeseer/House/House/All Off No Bedroom/set', function(topic, val) {
   log.info(topic + ':' + val);
   setValue('homeseer/-/Bedroom/Master Bedroom Cans - Button D/set', val);
 });
@@ -146,13 +158,18 @@ function switchoff(path) {
 subscribe('homeseer/-/Bedroom/Master Bedroom Cans - Button D', function(topic, val) {
   log.info(topic + ':' + val);
   if (val === 0) {
-    log.info("All off lights pressed, switching off all on lights");
+    log.info("All off no bedroom pressed, switching off all on lights except bedroom");
     var pause = 100;
     for (var i in status) {
       if (status[i] > 0) {
-        log.info("Scheduling off for:" + i);
-        setTimeout(switchoff, pause, i);
-        pause = pause + 100;
+        
+        var fields = i.split("/");
+        if (fields[2] != "Bedroom"){
+        
+          log.info("Scheduling off for:" + i);
+          setTimeout(switchoff, pause, i);
+          pause = pause + 100;
+        }
       }
     }
 
@@ -162,4 +179,27 @@ subscribe('homeseer/-/Bedroom/Master Bedroom Cans - Button D', function(topic, v
     setValue('MusicCast/family_room/power/set', 'standby');
   }
 });
+
+subscribe('homeseer/House/House/All Off House', function(topic, val) {
+  log.info(topic + ':' + val);
+  if (val === 0) {
+    log.info("All off activated, switching off all on lights");
+    var pause = 100;
+    for (var i in status) {
+      if (status[i] > 0) {
+       
+        
+          log.info("Scheduling off for:" + i);
+          setTimeout(switchoff, pause, i);
+          pause = pause + 100;
+      }
+    }
+
+    setValue('MusicCast/basement/power/set', 'standby');
+    setValue('MusicCast/dining_room/power/set', 'standby');
+    setValue('MusicCast/kitchen/power/set', 'standby');
+    setValue('MusicCast/family_room/power/set', 'standby');
+  }
+});
+
 
