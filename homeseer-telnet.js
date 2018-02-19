@@ -71,8 +71,8 @@ function connect() {
 schedule('*/10 * * * *', function(){
   log.info('Getting full homeseer status');
   command = "gs";
-  socket.write(command + "\r\n", function(err) {
-    log.info("Err:" + err);
+  socket.write(command + "\r\n", function() {
+    log.info("gs\n");
   });
 });
 
