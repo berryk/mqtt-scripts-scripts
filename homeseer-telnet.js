@@ -12,16 +12,18 @@ function connect() {
 
   socket.on('data', function(data) {
     //parse data from response
-    log.info("Data:"+data);
+//    log.info("Data:"+data);
     
     if (command == "au,default,default" && data == "ok\r\n")
     {
-       log.info("Logged in successfully");
-       command = "gs";
-       socket.write(command + "\r\n");
-    } else {
-       log.info("Log in failed, retrying");
-       setTimeout(socket.write, 5000, command + "\r\n");
+       if (data == "ok\r\n"){
+          log.info("Logged in successfully");
+          command = "gs";
+          socket.write(command + "\r\n");
+       } else {
+         log.info("Log in failed, command:" + command + " Data: " + data);
+         setTimeout(socket.write, 5000, command + "\r\n");
+       }
     }
     
     if (command == "gs" && data != "ok\r\n") {
