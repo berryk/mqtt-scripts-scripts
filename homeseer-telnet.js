@@ -12,6 +12,17 @@ function connect() {
 
   socket.on('data', function(data) {
     //parse data from response
+    
+    if (command == "au,default,default" && data == "ok\r\n")
+    {
+       log.info("Logged in successfully");
+       command = "gs";
+       socket.write(command + "\r\n");
+    } else {
+       log.info("Log in failed, retrying");
+       setTimeout(socket.write, 5000, command + "\r\n");
+    }
+    
     if (command == "gs" && data != "ok\r\n") {
       command = "";
       //send a message to reset counters
@@ -49,13 +60,7 @@ function connect() {
   }).on('connect', function() {
     log.info('CONNECTED');
     command = "au,default,default";
-    socket.write(command + "\r\n", function() {
-      command = "gs";
-      socket.write(command + "\r\n", function() {
-        log.info("gs\n");
-      });
-    });
-
+    socket.write(command + "\r\n");
   }).on('end', function() {
     log.info('DONE, reconnecting');
     setTimeout(connect, 5000);
