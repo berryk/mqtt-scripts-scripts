@@ -120,7 +120,7 @@ subscribe('homeseer/status', function(topic, val) {
     "Outside": 0,
   };
 
-  alloffstatus = {};
+  //alloffstatus = {};
   status = {};
 
 });

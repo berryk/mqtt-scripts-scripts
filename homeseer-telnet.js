@@ -6,6 +6,17 @@ var socket;
 
 connect();
 
+function connect() {
+  socket = net.createConnection(11000, 'mqtt.lan');
+  log.info('Socket created.');
+  
+//   socket.on('error',function(msg){
+//     log.error('Error:',msg);
+//     log.info('Reconnecting');
+//     setTimeout(connect,5000);
+//   });
+}
+
 socket.on('data', function(data) {
     //parse data from response
     if (command == "gs" && data != "ok\r\n") {
@@ -61,16 +72,7 @@ socket.on('data', function(data) {
     setTimeout(connect,5000);
 });
 
-function connect() {
-  socket = net.createConnection(11000, 'mqtt.lan');
-  log.info('Socket created.');
-  
-  socket.on('error',function(msg){
-    log.error('Error:',msg);
-    log.info('Reconnecting');
-    setTimeout(connect,5000);
-  });
-}
+
 
 // Every hour rerun the gs command
 schedule('*/30 * * * *', function(){
