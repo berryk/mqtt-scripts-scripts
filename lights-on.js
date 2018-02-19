@@ -87,13 +87,15 @@ subscribe('homeseer/Lights/#', function(topic, val) {
       status[topic] = val;
       if (val > 0) {
         count[fields[2]] = count[fields[2]] + 1;
+        setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 100);
+        setStatus('homeseer/House/House/All Off House/set', 100);
       } else {
         count[fields[2]] = count[fields[2]];
+        setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 0);
       }
       
         log.info(fields[2] + ' lights on: ' + count[fields[2]]);
-        setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 100);
-        setStatus('homeseer/House/House/All Off House/set', 100);
+
         // count total lights on
         var totalOn = 0;
         for (var i in count) {
