@@ -61,14 +61,19 @@ socket.on('data', function(data) {
     setTimeout(connect,5000);
 });
 
-
 function connect() {
   socket = net.createConnection(11000, 'mqtt.lan');
   log.info('Socket created.');
+  
+  socket.on('error',function(msg){
+    log.error('Error:',msg);
+    log.info('Reconnecting');
+    setTimeout(connect,5000);
+  });
 }
 
 // Every hour rerun the gs command
-schedule('*/10 * * * *', function(){
+schedule('*/30 * * * *', function(){
   log.info('Getting full homeseer status');
   command = "gs";
   socket.write(command + "\r\n", function() {
