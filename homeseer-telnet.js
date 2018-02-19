@@ -12,6 +12,7 @@ function connect() {
 
   socket.on('data', function(data) {
     //parse data from response
+    log.info("Data:"+data);
     
     if (command == "au,default,default" && data == "ok\r\n")
     {
@@ -61,6 +62,7 @@ function connect() {
     log.info('CONNECTED');
     command = "au,default,default";
     socket.write(command + "\r\n");
+    log.info("Logging In");
   }).on('end', function() {
     log.info('DONE, reconnecting');
     setTimeout(connect, 5000);
