@@ -32,50 +32,26 @@ subscribe('homeseer/Lights/#', function(topic, val) {
 
     if (topic in status) {
 
+      // If we already have a status for this light
+      // If it was 0 before
       if (status[topic] === 0) {
         status[topic] = val;
+        // And now it is not 0
         if (val > 0) {
           count[fields[2]] = count[fields[2]] + 1;
-          log.info(fields[2] + ' lights on: ' + count[fields[2]]);
           setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 100);
-          setStatus('homeseer/House/House/All Off House/set', 100);
-
-          // count total lights on
-          var totalOn = 0;
-          for (var i in count) {
-            totalOn = totalOn + count[i];
-          }
-          log.info('Total lights on:' + totalOn)
-        }
-      } else {
+        }}
+      else {
         // val was > 0 before 
         status[topic] = val;
+        // But it is 0 now
+        // Delete one and possibly update the whole house
         if (val === 0) {
           count[fields[2]] = count[fields[2]] - 1;
           log.info(fields[2] + ' lights on: ' + count[fields[2]]);
 
-          // count total lights on
-          var totalOn = 0;
-          for (var i in count) {
-            totalOn = totalOn + count[i];
-          }
-          log.info('Total lights on:' + totalOn)
-
-          // insert logic here 
           if (count[fields[2]] === 0) {
             setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 0);
-
-            // count total lights on
-            //                         var totalOn = 0;
-            //                         for (var i in count) {
-            //                             totalOn = totalOn + count[i];
-            //                         }
-            //                         log.info('Total lights on:' + totalOn)
-
-          }
-
-          if (totalOn === 0) {
-            setStatus('homeseer/House/House/All Off House/set', 0);
           }
         } else {
           log.info('No change' + fields[2] + '\n' + 'lights on: ' + count[fields[2]]);
@@ -83,29 +59,34 @@ subscribe('homeseer/Lights/#', function(topic, val) {
       }
 
     } else {
-      // topic doesn't exist, so create it
+      // topic doesn't exist, so cache it
       status[topic] = val;
       if (val > 0) {
         count[fields[2]] = count[fields[2]] + 1;
         setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 100);
-        setStatus('homeseer/House/House/All Off House/set', 100);
       } else {
-        count[fields[2]] = count[fields[2]];
-        setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 0);
-      }
-      
-        log.info(fields[2] + ' lights on: ' + count[fields[2]]);
-
-        // count total lights on
-        var totalOn = 0;
-        for (var i in count) {
-          totalOn = totalOn + count[i];
+        // count[fields[2]] = count[fields[2]];
+        if (count[fields[2]] === 0) {
+          setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 0);
         }
-        log.info('Total lights on:' + totalOn)
       }
     }
+
+    log.info(fields[2] + ' lights on: ' + count[fields[2]]);
+    // count total lights on
+    var totalOn = 0;
+    for (var i in count) {
+      totalOn = totalOn + count[i];
+    }
+    log.info('Total lights on:' + totalOn)
+
+    if (totalOn === 0) {
+      setStatus('homeseer/House/House/All Off House/set', 0);
+    } else {
+      setStatus('homeseer/House/House/All Off House/set', 100);
+    }
   }
-);
+});
 
 // Need to add a status mode perhaps every hour where status is checked and totals reset
 // This should also update overall counts
@@ -147,5 +128,10 @@ subscribe('homeseer/-/Bedroom/Master Bedroom Cans - Button D', function(topic, v
         pause = pause + 100;
       }
     }
+    
+    setValue('MusicCast/basement/power/set', 'standby');
+    setValue('MusicCast/dining_room/power/set', 'standby');
+    setValue('MusicCast/kitchen/power/set', 'standby');
+    setValue('MusicCast/family_room/power/set', 'standby');
   }
 });
