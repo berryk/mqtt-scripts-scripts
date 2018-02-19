@@ -162,3 +162,4 @@ subscribe('homeseer/-/Bedroom/Master Bedroom Cans - Button D', function(topic, v
     setValue('MusicCast/family_room/power/set', 'standby');
   }
 });
+

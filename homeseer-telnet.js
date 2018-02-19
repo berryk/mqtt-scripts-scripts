@@ -2,6 +2,7 @@ var net = require('net');
 var command;
 var devices = [];
 var topics = [];
+var lights = [];
 var socket;
 
 connect();
@@ -32,7 +33,9 @@ function connect() {
 
       var devicedefns = data.toString().split("|");
       var len = devicedefns.length; 
-      setValue("homeseer/status", len);
+      
+      
+      var light_count = 0; 
       
       for (var i = 0; i < len; i++) {
         var device = devicedefns[i];
@@ -49,11 +52,19 @@ function connect() {
           } else {
             value = 100;
           }
-          setValue(topic, value);
+          light_count = light_count + 1; 
+          lights[topic] = value;
+          //setValue(topic, value);
         }
         topics[topic + '/set'] = fields[0];
         log.info('Device:' + fields[0] + " Topic:" + topic)
       }
+      
+      setValue("homeseer/status", lights);
+      for (var light_topic in lights ){
+        setValue( light_topic, lights[light_topic]);
+      }
+      
     } else {
       var fields = data.toString().split(",");
       if (fields[0] == "DC") {
