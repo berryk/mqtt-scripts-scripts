@@ -21,8 +21,7 @@ function setStatus(path, value) {
     }
 }
 
-// Need to add a status mode perhaps every hour where status is checked and totals reset
-// This should also update overall counts
+
 
 subscribe('homeseer/Lights/#', function(topic, val) {
     log.info(topic + ':' + val)
@@ -79,6 +78,21 @@ subscribe('homeseer/Lights/#', function(topic, val) {
         }
     }
 
+});
+
+// Need to add a status mode perhaps every hour where status is checked and totals reset
+// This should also update overall counts
+
+subscribe('homeseer/status',function(topic, val) {
+    log.info(topic + ':' + val);
+    log.info("Resetting counters for full status");
+    count = {
+      "Downstairs": 0,
+      "Upstairs": 0,
+      "Basement": 0,
+      "Outside": 0,
+    };
+    
 });
 
 subscribe('homeseer/House/House/All Off House/set', function(topic, val) {

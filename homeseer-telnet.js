@@ -2,13 +2,16 @@ var net = require('net');
 var command;
 var devices = [];
 var topics = [];
-var socket = net.createConnection(11000, 'mqtt.lan');
-log.info('Socket created.');
+var socket;
+
+connect();
 
 socket.on('data', function(data) {
     //parse data from response
     if (command == "gs" && data != "ok\r\n") {
         command = "";
+        //send a message to reset counters
+        setValue("homeseer/status","reset")
         var devicedefns = data.toString().split("|");
         for (var i = 0, len = devicedefns.length; i < len; i++) {
             var device = devicedefns[i];
@@ -51,10 +54,28 @@ socket.on('data', function(data) {
     });
 
 }).on('end', function() {
-    log.info('DONE');
+    log.info('DONE, reconnecting');
+    setTimeout(connect,5000);
+}).on('error',function(msg){
+    log.error('Error:',msg);
+    log.info('Reconnecting');
+    setTimeout(connect,5000);
 });
 
-// Need to add error handling here 
+
+function connect() {
+  socket = net.createConnection(11000, 'mqtt.lan');
+  log.info('Socket created.');
+}
+
+// Every hour rerun the gs command
+schedule('*/25 * * * *', function(){
+  log.info('Getting full homeseer status');
+  command = "gs";
+  socket.write(command + "\r\n", function(err) {
+    log.info("Err:" + err);
+  });
+});
 
 subscribe('homeseer/+/+/+/set', function(topic, val) {
     log.info(topic + ':' + val);
