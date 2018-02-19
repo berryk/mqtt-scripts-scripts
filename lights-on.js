@@ -87,6 +87,10 @@ subscribe('homeseer/Lights/#', function(topic, val) {
       status[topic] = val;
       if (val > 0) {
         count[fields[2]] = count[fields[2]] + 1;
+      } else {
+        count[fields[2]] = count[fields[2]];
+      }
+      
         log.info(fields[2] + ' lights on: ' + count[fields[2]]);
         setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 100);
         setStatus('homeseer/House/House/All Off House/set', 100);
@@ -99,8 +103,7 @@ subscribe('homeseer/Lights/#', function(topic, val) {
       }
     }
   }
-
-});
+);
 
 // Need to add a status mode perhaps every hour where status is checked and totals reset
 // This should also update overall counts
