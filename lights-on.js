@@ -18,14 +18,14 @@ function setStatus(path, value) {
   if (path in alloffstatus) {
     if (value != alloffstatus[path]) {
       alloffstatus[path] = value;
-      if (device_count >= devices) {
+      if (device_count >  (devices-1)) {
         log.info('Calling setValue:' + path + ':' + value);
         setValue(path, value);
       }
     }
   } else {
     alloffstatus[path] = value;
-    if (device_count >= devices) {
+    if (device_count > (devices-1)) {
       log.info('Calling setValue:' + path + ':' + value);
       setValue(path, value);
     }
