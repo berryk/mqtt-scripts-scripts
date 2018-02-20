@@ -19,18 +19,17 @@ function setStatus(path, value) {
   if (path in alloffstatus) {
     if (value != alloffstatus[path]) {
       alloffstatus[path] = value;
-      if (device_count >=  devices) {
+      if (device_count >  devices) {
         log.info('Calling setValue:' + path + ':' + value);
         setValue(path, value);
       }
-    }
+    }}
    else {
     alloffstatus[path] = value;
-    if (device_count >= devices) {
+    if (device_count > devices) {
       log.info('Calling setValue:' + path + ':' + value);
       setValue(path, value);
     }
-  }
   }
 }
 
@@ -146,7 +145,7 @@ subscribe('homeseer/status', function(topic, val) {
 
   // could set a flag here that indicates it is a status run and only updates statuses when complete
 
-  //alloffstatus = {};
+  alloffstatus = {};
   status = {};
 
 });
