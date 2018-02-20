@@ -24,9 +24,11 @@ function connect() {
     var expr = /.*\r\n/;
     if (message.match(expr)) {
 
+      var processing = message; 
+      message = "";
       var pipe = /|/;
-      log.info("Message:" + message);
-      if (message == "ok\r\n") {
+      log.info("Message:" + processing);
+      if (processing == "ok\r\n") {
         var processed = command_q.shift();
         log.info("Command:" + processed + " OK");
 
@@ -39,12 +41,12 @@ function connect() {
         //         socket.write(command_q[0]);
         //       }
       } else {
-        if (message.match(pipe)) {
+        if (processing.match(pipe)) {
           // process gs
           var processed = command_q.shift();
           log.info("Command:" + processed + " OK");
 
-          var devicedefns = message.toString().split("|");
+          var devicedefns = processing.toString().split("|");
           var len = devicedefns.length;
 
 
@@ -83,7 +85,7 @@ function connect() {
           // end process gs
         } else {
           // process DC status messages
-          var fields = message.toString().split(",");
+          var fields = processing.toString().split(",");
           if (fields[0] == "DC") {
             var topic = devices[fields[1]];
             var value = fields[2];
@@ -91,7 +93,7 @@ function connect() {
             setValue(topic, value);
             // end process DC status messages
           } else {
-            log.info("!! Unknown message:" + message);
+            log.info("!! Unknown message:" + processing);
             log.info("Current command:" + command_q[0]);
             command_q.shift();
           }
@@ -106,8 +108,6 @@ function connect() {
         log.info("Writing command to socket:" + command_q[0]);
         socket.write(command_q[0]);
       }
-
-    message = "";
 
   }).on('connect', function() {
     log.info('CONNECTED');
