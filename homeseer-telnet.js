@@ -33,6 +33,7 @@ function connect() {
         // process gs
         command_q.shift();
 
+        data = data + "|";
         var devicedefns = data.toString().split("|");
         var len = devicedefns.length;
 
@@ -80,6 +81,7 @@ function connect() {
           // end process DC status messages
         } else {
           log.info("!! Unknown message:" + data);
+          log.info("Current command:"+command_q[0]);
         }
       }
     }
