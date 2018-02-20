@@ -26,7 +26,7 @@ function connect() {
 
       var processing = message; 
       message = "";
-      var pipe = /|/;
+      var pipe = /\|/;
       log.info("Message:" + processing);
       if (processing == "ok\r\n") {
         var processed = command_q.shift();
