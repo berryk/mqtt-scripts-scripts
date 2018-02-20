@@ -17,7 +17,7 @@ function connect() {
     log.info("Data:"+data);
 
     if (data == "ok\r\n") {
-      var processed = command_q.shift;
+      var processed = command_q.shift();
       log.info("Command:" + processed + " OK");
 
       if (processed == "au,default,default\r\n") {
@@ -30,7 +30,7 @@ function connect() {
     } else {
       if (command_q[0] == "gs\r\n") {
         // process gs
-        command_q.shift;
+        command_q.shift();
 
         var devicedefns = data.toString().split("|");
         var len = devicedefns.length;
