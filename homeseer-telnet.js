@@ -8,33 +8,44 @@ var command_q = [];
 
 connect();
 
+var message = "";
+
 function connect() {
   socket = net.createConnection(11000, 'mqtt.lan');
   log.info('Socket created.');
 
   socket.on('data', function(data) {
     //parse data from response
-    log.info("Data:"+data);
+    //log.info("Data:"+data);
 
-    if (data == "ok\r\n") {
-      var processed = command_q.shift();
-      log.info("Command:" + processed + " OK");
+    // \r\n marks end of message, so don't process until we get an \r\n
+    
+    message = message + data; 
+    var expr = /.*\r\n/;
+    if (message.match(expr)){
+    
+      var pipe = /|/;
+      log.info("Message:"+message);
+      if (message == "ok\r\n") {
+        var processed = command_q.shift();
+        log.info("Command:" + processed + " OK");
 
-      if (processed == "au,default,default\r\n") {
-        addCommand("gs");
-      }
+        if (processed == "au,default,default\r\n") {
+          addCommand("gs");
+        }
 
 //       if (command_q.length > 0) {
 //         log.info("Writing command to socket:"+command_q[0]);
 //         socket.write(command_q[0]);
 //       }
-    } else {
-      if (command_q[0] == "gs\r\n") {
+         } else {
+      if (message.match(pipe)) {
         // process gs
-        command_q.shift();
+        var processed = command_q.shift();
+        log.info("Command:" + processed + " OK");
 
-        data = data + "|";
-        var devicedefns = data.toString().split("|");
+        message = message + "|";
+        var devicedefns = message.toString().split("|");
         var len = devicedefns.length;
 
 
@@ -72,7 +83,7 @@ function connect() {
         // end process gs
       } else {
         // process DC status messages
-        var fields = data.toString().split(",");
+        var fields = message.toString().split(",");
         if (fields[0] == "DC") {
           var topic = devices[fields[1]];
           var value = fields[2];
@@ -80,7 +91,7 @@ function connect() {
           setValue(topic, value);
           // end process DC status messages
         } else {
-          log.info("!! Unknown message:" + data);
+          log.info("!! Unknown message:" + message);
           log.info("Current command:"+command_q[0]);
           command_q.shift();
         }
@@ -91,6 +102,9 @@ function connect() {
         log.info("Writing command to socket:"+command_q[0]);
         socket.write(command_q[0]);
     }
+      
+    message = "";
+    } 
     
   }).on('connect', function() {
     log.info('CONNECTED');
