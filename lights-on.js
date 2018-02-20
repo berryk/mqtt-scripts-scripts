@@ -35,6 +35,7 @@ subscribe('homeseer/Lights/#', function(topic, val) {
   log.info(topic + ':' + val)
 
   device_count = device_count + 1;
+  log.info("Device count:" + device_count)
 
   var fields = topic.split("/");
 
@@ -80,6 +81,7 @@ subscribe('homeseer/Lights/#', function(topic, val) {
           setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 0);
         }
       }
+    }
 
 
 
@@ -107,8 +109,6 @@ subscribe('homeseer/Lights/#', function(topic, val) {
         setStatus('homeseer/House/House/All Off No Bedroom/set', 100);
       }
     }
-
-  }
 
   if (device_count == devices) {
     for (var path in alloffstatus) {
