@@ -76,7 +76,7 @@ function connect() {
             log.info('Device:' + fields[0] + " Topic:" + topic)
           }
 
-          setValue("homeseer/status", lights);
+          setValue("homeseer/status", light_count);
           for (var light_topic in lights) {
             setValue(light_topic, lights[light_topic]);
           }

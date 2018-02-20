@@ -111,10 +111,8 @@ subscribe('homeseer/Lights/#', function(topic, val) {
   }
 
   if (device_count == devices) {
-    var pause = 100;
     for (var path in alloffstatus) {
-      setTimeout(setStatus, pause, path, alloffstatus[path]);
-      pause = pause + 100; 
+      setStatus(alloffstatus[path]);
     }
   }
 
