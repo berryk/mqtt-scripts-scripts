@@ -44,7 +44,6 @@ function connect() {
         var processed = command_q.shift();
         log.info("Command:" + processed + " OK");
 
-        message = message + "|";
         var devicedefns = message.toString().split("|");
         var len = devicedefns.length;
 
@@ -53,6 +52,7 @@ function connect() {
 
         for (var i = 0; i < len; i++) {
           var device = devicedefns[i];
+          device = device.replace(/\r\n/g, '');
           device = device.replace(/\//g, '-');
           device = device.replace(/,,/g, ',-,');
           var fields = device.split(",");
