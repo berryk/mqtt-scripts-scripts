@@ -111,7 +111,9 @@ subscribe('homeseer/Lights/#', function(topic, val) {
     }
 
   if (device_count == devices) {
+    log.info("Setting status for House controls");
     for (var path in alloffstatus) {
+      log.info("Path:"+path+" Status:"+alloffstatus[path]);
       setStatus(path, alloffstatus[path]);
     }
   }
