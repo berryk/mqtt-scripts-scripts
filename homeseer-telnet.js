@@ -14,13 +14,13 @@ function connect() {
 
   socket.on('data', function(data) {
     //parse data from response
-    //    log.info("Data:"+data);
+    log.info("Data:"+data);
 
     if (data == "ok\r\n") {
       var processed = command_q.shift;
       log.info("Command:" + processed + " OK");
 
-      if (processed == "au,default,default") {
+      if (processed == "au,default,default\r\n") {
         addCommand("gs");
       }
 
@@ -28,7 +28,7 @@ function connect() {
         socket.write(command_q[0]);
       }
     } else {
-      if (command_q[0] == "gs") {
+      if (command_q[0] == "gs\r\n") {
         // process gs
         command_q.shift;
 
