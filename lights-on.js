@@ -14,6 +14,7 @@ var status = {};
 
 function setStatus(path, value) {
 
+  // need to trigger publishing when we first hit the device number
   log.info("setStatus device_count:" + device_count + " devices:" + devices);
   if (path in alloffstatus) {
     if (value != alloffstatus[path]) {
@@ -118,7 +119,8 @@ subscribe('homeseer/Lights/#', function(topic, val) {
     log.info("Setting status for House controls");
     for (var path in alloffstatus) {
       log.info("Path:"+path+" Status:"+alloffstatus[path]);
-      setStatus(path, alloffstatus[path]);
+      setValue(path, alloffstatus[path]);
+
     }
   }
 
