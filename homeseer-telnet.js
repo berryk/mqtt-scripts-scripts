@@ -98,13 +98,14 @@ function connect() {
         }
       }
 
+
+
+    }
+
       if (command_q.length > 0) {
         log.info("Writing command to socket:" + command_q[0]);
         socket.write(command_q[0]);
       }
-
-
-    }
 
     message = "";
 
