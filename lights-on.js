@@ -14,6 +14,7 @@ var status = {};
 
 function setStatus(path, value) {
 
+  log.info("setStatus device_count:" + device_count + " devices:" + devices);
   if (path in alloffstatus) {
     if (value != alloffstatus[path]) {
       alloffstatus[path] = value;
