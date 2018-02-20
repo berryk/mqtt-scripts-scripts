@@ -82,6 +82,7 @@ function connect() {
         } else {
           log.info("!! Unknown message:" + data);
           log.info("Current command:"+command_q[0]);
+          command_q.shift();
         }
       }
     }
