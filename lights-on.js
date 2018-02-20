@@ -112,7 +112,7 @@ subscribe('homeseer/Lights/#', function(topic, val) {
 
   if (device_count == devices) {
     for (var path in alloffstatus) {
-      setStatus(alloffstatus[path]);
+      setStatus(path, alloffstatus[path]);
     }
   }
 

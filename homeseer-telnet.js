@@ -44,7 +44,9 @@ function connect() {
         if (processing.match(pipe)) {
           // process gs
           var processed = command_q.shift();
+          if (processed == "gs\r\n"){
           log.info("Command:" + processed + " OK");
+
 
           var devicedefns = processing.toString().split("|");
           var len = devicedefns.length;
@@ -83,6 +85,7 @@ function connect() {
 
 
           // end process gs
+          }
         } else {
           // process DC status messages
           var fields = processing.toString().split(",");
