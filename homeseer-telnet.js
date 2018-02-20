@@ -24,9 +24,10 @@ function connect() {
         addCommand("gs");
       }
 
-      if (command_q.length > 0) {
-        socket.write(command_q[0]);
-      }
+//       if (command_q.length > 0) {
+//         log.info("Writing command to socket:"+command_q[0]);
+//         socket.write(command_q[0]);
+//       }
     } else {
       if (command_q[0] == "gs\r\n") {
         // process gs
@@ -82,6 +83,12 @@ function connect() {
         }
       }
     }
+    
+    if (command_q.length > 0) {
+        log.info("Writing command to socket:"+command_q[0]);
+        socket.write(command_q[0]);
+    }
+    
   }).on('connect', function() {
     log.info('CONNECTED');
     command = "au,default,default";
