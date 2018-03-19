@@ -191,9 +191,7 @@ subscribe('homeseer/House/House/All Off House', function(topic, val) {
     log.info("All off activated, switching off all on lights");
     var pause = 100;
     for (var i in status) {
-//      if (status[i] > 0) {
-       
-        
+//      if (status[i] > 0) {  
           log.info("Scheduling off for:" + i);
           setTimeout(switchoff, pause, i);
           pause = pause + 100;
