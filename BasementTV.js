@@ -2,7 +2,6 @@ var power = "standby";
 var input = "av1";
 
 var tvOn = {
-    "audio1": "on",
     "av2": "on",
     "av3": "on",
     "av4": "on",
