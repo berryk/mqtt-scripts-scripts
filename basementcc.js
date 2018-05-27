@@ -5,7 +5,7 @@ var volume_mult = 1.6;
 
 var ccname = 'Basement speaker';
 var mcname = 'basement';
-var mcinput = 'av1';
+var mcinput = 'audio1';
 
 var timeoutObj;
 
