@@ -3,7 +3,7 @@ var roompower = 0;
 var timerrunning = 0;
 var volume_mult = 1.6;
 
-var ccname = 'Basement speakers';
+var ccname = 'Basement speaker';
 var mcname = 'basement';
 var mcinput = 'av1';
 
