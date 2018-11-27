@@ -15,18 +15,21 @@ var status = {};
 function setStatus(path, value) {
 
   // need to trigger publishing when we first hit the device number
-  log.info("setStatus device_count:" + device_count + " devices:" + devices);
+  //log.info("setStatus device_count:" + device_count + " devices:" + devices);
+  log.info("Path:" + path + " Value:" + value);
   if (path in alloffstatus) {
     if (value != alloffstatus[path]) {
       alloffstatus[path] = value;
-      if (device_count >  devices) {
+      if (device_count ==  devices) {
         log.info('Calling setValue:' + path + ':' + value);
         setValue(path, value);
       }
-    }}
+    } else {
+	log.info('No change in status for value:' + path + ' not publishing');
+}}
    else {
     alloffstatus[path] = value;
-    if (device_count > devices) {
+    if (device_count == devices) {
       log.info('Calling setValue:' + path + ':' + value);
       setValue(path, value);
     }
@@ -38,8 +41,14 @@ function setStatus(path, value) {
 subscribe('homeseer/Lights/#', function(topic, val) {
   log.info(topic + ':' + val)
 
-  device_count = device_count + 1;
-  log.info("Device count:" + device_count)
+  //device_count = device_count + 1;
+  //log.info("Device count:" + device_count)
+
+  var lastCount = {};
+
+  Object.keys(count).forEach(function(key){
+     lastCount[key] = count[key];
+  });
 
   var fields = topic.split("/");
 
@@ -54,7 +63,7 @@ subscribe('homeseer/Lights/#', function(topic, val) {
         // And now it is not 0
         if (val > 0) {
           count[fields[2]] = count[fields[2]] + 1;
-          setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 100);
+          //setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 100);
         }
       } else {
         // val was > 0 before 
@@ -66,7 +75,7 @@ subscribe('homeseer/Lights/#', function(topic, val) {
           log.info(fields[2] + ' lights on: ' + count[fields[2]]);
 
           if (count[fields[2]] === 0) {
-            setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 0);
+            //setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 0);
           }
         } else {
           log.info('No change' + fields[2] + '\n' + 'lights on: ' + count[fields[2]]);
@@ -75,14 +84,17 @@ subscribe('homeseer/Lights/#', function(topic, val) {
 
     } else {
       // topic doesn't exist, so cache it
-      status[topic] = val;
+     
+  	device_count = device_count + 1;
+  	log.info("Device count:" + device_count)
+ 	status[topic] = val;
       if (val > 0) {
         count[fields[2]] = count[fields[2]] + 1;
-        setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 100);
+        //setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 100);
       } else {
         // count[fields[2]] = count[fields[2]];
         if (count[fields[2]] === 0) {
-          setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 0);
+         //setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 0);
         }
       }
     }
@@ -93,7 +105,18 @@ subscribe('homeseer/Lights/#', function(topic, val) {
       // count total lights on
       var totalOn = 0;
       for (var i in count) {
+	log.info(i + ' lights on:' + count[i]);
         totalOn = totalOn + count[i];
+
+//	if (lastCount[i] != count[i]){
+//		log.info(i + 'has changed, last count was ' + lastCount[i] + ' now it is ' + count[i]);
+		if (count[i] == 0) {
+			setStatus('homeseer/House/House/All Off ' + i + '/set',0);
+		}  
+		if (count[i] > 0 ) {
+			setStatus('homeseer/House/House/All Off ' + i + '/set',100);
+		}
+//	}
       }
       log.info('Total lights on:' + totalOn)
       
@@ -114,14 +137,14 @@ subscribe('homeseer/Lights/#', function(topic, val) {
       }
     }
 
-  if (device_count == devices) {
-    log.info("Setting status for House controls");
-    for (var path in alloffstatus) {
-      log.info("Path:"+path+" Status:"+alloffstatus[path]);
-      setValue(path, alloffstatus[path]);
+  //if (device_count == devices) {
+  //  log.info("Setting status for House controls");
+  //  for (var path in alloffstatus) {
+  //    log.info("Path:"+path+" Status:"+alloffstatus[path]);
+  //    setStatus(path, alloffstatus[path]);
 
-    }
-  }
+  //  }
+  //}
 
 });
 

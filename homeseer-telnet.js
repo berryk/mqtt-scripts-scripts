@@ -8,6 +8,7 @@ var command_q = [];
 
 connect();
 
+
 var message = "";
 
 function connect() {
@@ -16,7 +17,7 @@ function connect() {
 
   socket.on('data', function(data) {
     //parse data from response
-    //log.info("Data:"+data);
+    log.info("Data:"+data);
 
     // \r\n marks end of message, so don't process until we get an \r\n
 
@@ -34,12 +35,13 @@ function connect() {
 
         if (processed == "au,default,default\r\n") {
           addCommand("gs");
-        }
+        } else {
 
-        //       if (command_q.length > 0) {
-        //         log.info("Writing command to socket:"+command_q[0]);
-        //         socket.write(command_q[0]);
-        //       }
+               if (command_q.length > 0) {
+                 log.info("Writing command to socket:"+command_q[0]);
+                 socket.write(command_q[0]);
+		log.info(command_q.length + " commands in the Q");
+               } }
       } else {
         if (processing.match(pipe)) {
           // process gs
@@ -48,7 +50,13 @@ function connect() {
           log.info("Command:" + processed + " OK");
 
 
-          var devicedefns = processing.toString().split("|");
+      if (command_q.length > 0) {
+        log.info("Writing command to socket:" + command_q[0]);
+	log.info(command_q.length + " commands in the Q");
+        socket.write(command_q[0]);
+      }
+      
+         var devicedefns = processing.toString().split("|");
           var len = devicedefns.length;
 
 
@@ -86,6 +94,12 @@ function connect() {
 
           // end process gs
           }
+    
+//		if (command_q.length > 0) {
+//        		log.info("Writing command to socket:" + command_q[0]);
+//			log.info(command_q.length + " commands in the Q");
+//        		socket.write(command_q[0]);
+//		}
         } else {
           // process DC status messages
           var fields = processing.toString().split(",");
@@ -107,10 +121,11 @@ function connect() {
 
     }
 
-      if (command_q.length > 0) {
-        log.info("Writing command to socket:" + command_q[0]);
-        socket.write(command_q[0]);
-      }
+    //if (command_q.length > 0) {
+    //    log.info("Writing command to socket:" + command_q[0]);
+    //	log.info(command_q.length + " commands in the Q");
+    //    socket.write(command_q[0]);
+    //}
 
   }).on('connect', function() {
     log.info('CONNECTED');
@@ -135,6 +150,7 @@ schedule('*/30 * * * *', function() {
   addCommand(command);
 });
 
+
 subscribe('homeseer/+/+/+/set', function(topic, val) {
   log.info(topic + ':' + val);
 
@@ -146,7 +162,9 @@ subscribe('homeseer/+/+/+/set', function(topic, val) {
 
 function addCommand(command) {
   command_q.push(command + "\r\n");
-  if (command_q.length == 1) {
+  if (command_q.length > 0 ) {
+    log.info("Writing command to socket:" + command);
+    log.info(command_q.length + " commands in the Q"); 
     socket.write(command_q[0]);
   }
 }
