@@ -10,6 +10,7 @@ var devices;
 var device_count;
 var alloffstatus = {};
 
+
 var status = {};
 
 function setStatus(path, value) {
@@ -18,15 +19,16 @@ function setStatus(path, value) {
   //log.info("setStatus device_count:" + device_count + " devices:" + devices);
   log.info("Path:" + path + " Value:" + value);
   if (path in alloffstatus) {
-    if (value != alloffstatus[path]) {
+//    if (value != alloffstatus[path]) {
       alloffstatus[path] = value;
       if (device_count ==  devices) {
         log.info('Calling setValue:' + path + ':' + value);
         setValue(path, value);
       }
-    } else {
-	log.info('No change in status for value:' + path + ' not publishing');
-}}
+//    } else {
+//	log.info('No change in status for value:' + path + ' not publishing');
+//}
+}
    else {
     alloffstatus[path] = value;
     if (device_count == devices) {

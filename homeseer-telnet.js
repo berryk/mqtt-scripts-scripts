@@ -9,6 +9,7 @@ var command_q = [];
 connect();
 
 
+
 var message = "";
 
 function connect() {
@@ -17,7 +18,7 @@ function connect() {
 
   socket.on('data', function(data) {
     //parse data from response
-    log.info("Data:"+data);
+    log.info("Data:<"+data+">");
 
     // \r\n marks end of message, so don't process until we get an \r\n
 
@@ -113,19 +114,21 @@ function connect() {
             log.info("!! Unknown message:" + processing);
             log.info("Current command:" + command_q[0]);
             command_q.shift();
+	    if (command_q.length > 0) {
+		log.info("Writing command to socket:" + command_q[0]);
+		log.info(command_q.length + " commands in the Q");
+                socket.write(command_q[0]);
           }
-        }
-      }
-
-
-
-    }
-
-    //if (command_q.length > 0) {
-    //    log.info("Writing command to socket:" + command_q[0]);
-    //	log.info(command_q.length + " commands in the Q");
-    //    socket.write(command_q[0]);
-    //}
+	}
+	}
+	}
+	}
+  //  if (command_q.length > 0) {
+  //      log.info("Writing command to socket:" + command_q[0]);
+  //  	log.info(command_q.length + " commands in the Q");
+  //      socket.write(command_q[0]);
+  //  }
+  log.info("Waiting for rn from socket, message so far is <"+message+">");
 
   }).on('connect', function() {
     log.info('CONNECTED');
