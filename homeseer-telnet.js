@@ -37,6 +37,12 @@ function connect() {
         if (processed == "au,default,default\r\n") {
           addCommand("gs");
         } else {
+          // Send an MQTT message that event has processed
+          var fields = processing.toString().split(",");
+          var topic = devices[fields[1]];
+          var value = fields[2];
+          log.info("Command processed republishing:" + topic + ":" + value);
+          setValue(topic, value);
           processNextCommand();
         }
       } else {
