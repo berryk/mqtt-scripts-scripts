@@ -61,7 +61,7 @@ subscribe('MusicCast/' + mcname + '/power', function(topic, val) {
     }
 });
 
-subscribe('homeseer/MeiHarmonyHub/MeiHarmonyHub/Family Room Activities', function(topic, val{
+subscribe('homeseer/MeiHarmonyHub/MeiHarmonyHub/Family Room Activities', function(topic, val){
     log.info(topic + ':' + val);
 
     if(val != harmonyActivity) {
@@ -69,7 +69,7 @@ subscribe('homeseer/MeiHarmonyHub/MeiHarmonyHub/Family Room Activities', functio
         log.info("Clearing timeout");
         clearTimeout(timeoutObj);
     }
-})
+});
 
 subscribe('MusicCast/' + mcname + '/input', function(topic, val) {
     log.info(topic + ':' + val);
