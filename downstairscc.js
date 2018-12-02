@@ -16,13 +16,13 @@ subscribe('chromecast/' + ccname + '/player_state', function(topic, val) {
         if (roompower == 0) {
             var volume = 62;
             setValue('chromecast/' + ccname + '/command/volume_level', volume);
-            setValue('MusicCast/family_room/volume/set', volume * volume_mult);
+            setValue('MusicCast/family_room/volume/set', 100);
             setValue('MusicCast/family_room/input/set', 'audio2');
             setValue('MusicCast/family_room/power/set', 'on');
-            setValue('MusicCast/dining_room/volume/set', volume * volume_mult);
+            setValue('MusicCast/dining_room/volume/set', 100);
             setValue('MusicCast/dining_room/input/set', 'audio3');
             setValue('MusicCast/dining_room/power/set', 'on');
-            setValue('MusicCast/kitchen/volume/set', volume * volume_mult);
+            setValue('MusicCast/kitchen/volume/set', 100);
             setValue('MusicCast/kitchen/input/set', 'av1');
             setValue('MusicCast/kitchen/power/set', 'on');
             roompower = 1;
@@ -51,7 +51,7 @@ subscribe('chromecast/' + ccname + '/player_state', function(topic, val) {
 subscribe('chromecast/' + ccname + '/volume_level', function(topic, val) {
     log.info(topic + ':' + val);
 
-    setValue('MusicCast/family_room/volume/set', val * volume_mult);
-    setValue('MusicCast/dining_room/volume/set', val * volume_mult);
-    setValue('MusicCast/kitchen/volume/set', val * volume_mult);
+    //setValue('MusicCast/family_room/volume/set', val * volume_mult);
+    //setValue('MusicCast/dining_room/volume/set', val * volume_mult);
+    //setValue('MusicCast/kitchen/volume/set', val * volume_mult);
 });

@@ -20,7 +20,7 @@ subscribe('chromecast/' + ccname + '/player_state', function(topic, val) {
             var volume = 62;
             setValue('chromecast/' + ccname + '/command/volume_level', volume);
             setValue('homeseer/MeiHarmonyHub/MeiHarmonyHub/Family Room Activities/set',harmonyActivity);
-            setValue('MusicCast/' + mcname + '/volume/set', volume * volume_mult);
+            setValue('MusicCast/' + mcname + '/volume/set', 100);
             //setValue('MusicCast/' + mcname + '/input/set', mcinput);
             //setValue('MusicCast/' + mcname + '/power/set', 'on');
             roompower = 1;
@@ -48,7 +48,7 @@ subscribe('chromecast/' + ccname + '/player_state', function(topic, val) {
 subscribe('chromecast/' + ccname + '/volume_level', function(topic, val) {
     log.info(topic + ':' + val);
 
-    setValue('MusicCast/' + mcname + '/volume/set', val * volume_mult);
+    //setValue('MusicCast/' + mcname + '/volume/set', val * volume_mult);
 });
 
 subscribe('MusicCast/' + mcname + '/power', function(topic, val) {
