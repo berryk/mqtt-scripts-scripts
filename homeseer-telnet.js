@@ -144,7 +144,9 @@ function process_gs(processing){
 
 function addCommand(command) {
   command_q.push(command + "\r\n");
-  processNextCommand();
+  if(command_q.length == 1){
+    processNextCommand(); 
+  }
 }
 
 function processNextCommand() {
