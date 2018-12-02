@@ -150,6 +150,7 @@ function process_gs(processing){
 
 function addCommand(command) {
   command_q.push(command + "\r\n");
+  log.info("Added command now "+ command_q.length + " commands in the Q");
   if(command_q.length == 1){
     processNextCommand(); 
   }
