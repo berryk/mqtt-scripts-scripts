@@ -204,6 +204,8 @@ subscribe('homeseer/-/Bedroom/Master Bedroom Cans - Button D', function(topic, v
     setValue('MusicCast/dining_room/power/set', 'standby');
     setValue('MusicCast/kitchen/power/set', 'standby');
     setValue('MusicCast/family_room/power/set', 'standby');
+    setValue('homeseer/MeiHarmonyHub/MeiHarmonyHub/Family Room Activities/set','-1');
+    setValue('homeseer/MeiHarmonyHub/MeiHarmonyHub/Basement Hub Activities/set','-1');
   }
 });
 
@@ -224,6 +226,8 @@ subscribe('homeseer/House/House/All Off House', function(topic, val) {
     setValue('MusicCast/dining_room/power/set', 'standby');
     setValue('MusicCast/kitchen/power/set', 'standby');
     setValue('MusicCast/family_room/power/set', 'standby');
+    setValue('homeseer/MeiHarmonyHub/MeiHarmonyHub/Family Room Activities/set','-1');
+    setValue('homeseer/MeiHarmonyHub/MeiHarmonyHub/Basement Hub Activities/set','-1');
   }
 });
 

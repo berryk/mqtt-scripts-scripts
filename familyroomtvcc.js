@@ -3,10 +3,10 @@ var roompower = 0;
 var timerrunning = 0;
 var volume_mult = 1.6;
 
-var ccname = 'Family Room Speakers';
+var ccname = 'Family Room TV';
 var mcname = 'family_room';
-var mcinput = 'audio2';
-var harmonyActivity = '36862399';
+var mcinput = 'AV2';
+var harmonyActivity = '27437506';
 var timeoutObj;
 
 subscribe('chromecast/' + ccname + '/player_state', function(topic, val) {
