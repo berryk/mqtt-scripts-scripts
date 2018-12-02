@@ -74,12 +74,9 @@ function connect() {
           }
 	      }
     	}
-	  }
-	}
-
-  log.info("Waiting for rn from socket, message so far is <"+message+">");
-
-  }).on('connect', function() {
+    }
+    log.info("Waiting for rn from socket, message so far is <"+message+">");
+	}).on('connect', function() {
     log.info('CONNECTED');
     command = "au,default,default";
     addCommand(command);
