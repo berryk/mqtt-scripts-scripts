@@ -8,8 +8,6 @@ var command_q = [];
 
 connect();
 
-
-
 var message = "";
 
 function connect() {
@@ -24,12 +22,14 @@ function connect() {
 
     message = message + data;
     var expr = /.*\r\n/;
+
     if (message.match(expr)) {
 
       var processing = message; 
       message = "";
       var pipe = /\|/;
       log.info("Message:" + processing);
+
       if (processing == "ok\r\n") {
         var processed = command_q.shift();
         log.info("Command:" + processed + " OK");
@@ -37,70 +37,25 @@ function connect() {
         if (processed == "au,default,default\r\n") {
           addCommand("gs");
         } else {
-
-               if (command_q.length > 0) {
-                 log.info("Writing command to socket:"+command_q[0]);
-                 socket.write(command_q[0]);
-		log.info(command_q.length + " commands in the Q");
-               } }
+          processNextCommand();
+        }
       } else {
+        // We didn't get an OK
         if (processing.match(pipe)) {
           // process gs
           var processed = command_q.shift();
           if (processed == "gs\r\n"){
-          log.info("Command:" + processed + " OK");
-
-
-      if (command_q.length > 0) {
-        log.info("Writing command to socket:" + command_q[0]);
-	log.info(command_q.length + " commands in the Q");
-        socket.write(command_q[0]);
-      }
+            log.info("Command:" + processed + " OK");
+            //processNextCommand();
       
-         var devicedefns = processing.toString().split("|");
-          var len = devicedefns.length;
+            light_count = process_gs(processing);
 
-
-          var light_count = 0;
-
-          for (var i = 0; i < len; i++) {
-            var device = devicedefns[i];
-            device = device.replace(/\r\n/g, '');
-            device = device.replace(/\//g, '-');
-            device = device.replace(/,,/g, ',-,');
-            var fields = device.split(",");
-            var topic = 'homeseer' + '/' + fields[4] + '/' + fields[5] + '/' + fields[3];
-            devices[fields[0]] = topic;
-            // fields[2] is status - if it's Off then 0 else 1 only publish if fields[4] = lights
-            if (fields[4] == "Lights") {
-              var value;
-              if (fields[2] == "Off") {
-                value = 0;
-              } else {
-                value = 100;
-              }
-              light_count = light_count + 1;
-              lights[topic] = value;
-              //setValue(topic, value);
+            setValue("homeseer/status", light_count);
+            for (var light_topic in lights) {
+              setValue(light_topic, lights[light_topic]);
             }
-            topics[topic + '/set'] = fields[0];
-            log.info('Device:' + fields[0] + " Topic:" + topic)
+            // end process gs
           }
-
-          setValue("homeseer/status", light_count);
-          for (var light_topic in lights) {
-            setValue(light_topic, lights[light_topic]);
-          }
-
-
-          // end process gs
-          }
-    
-//		if (command_q.length > 0) {
-//        		log.info("Writing command to socket:" + command_q[0]);
-//			log.info(command_q.length + " commands in the Q");
-//        		socket.write(command_q[0]);
-//		}
         } else {
           // process DC status messages
           var fields = processing.toString().split(",");
@@ -113,21 +68,15 @@ function connect() {
           } else {
             log.info("!! Unknown message:" + processing);
             log.info("Current command:" + command_q[0]);
-            command_q.shift();
-	    if (command_q.length > 0) {
-		log.info("Writing command to socket:" + command_q[0]);
-		log.info(command_q.length + " commands in the Q");
-                socket.write(command_q[0]);
+            log.info("Trying again");
+            //command_q.shift();
+            processNextCommand();
           }
+	      }
+    	}
+	  }
 	}
-	}
-	}
-	}
-  //  if (command_q.length > 0) {
-  //      log.info("Writing command to socket:" + command_q[0]);
-  //  	log.info(command_q.length + " commands in the Q");
-  //      socket.write(command_q[0]);
-  //  }
+
   log.info("Waiting for rn from socket, message so far is <"+message+">");
 
   }).on('connect', function() {
@@ -163,10 +112,47 @@ subscribe('homeseer/+/+/+/set', function(topic, val) {
   addCommand(command);
 });
 
+function process_gs(processing){
+  var devicedefns = processing.toString().split("|");
+  var len = devicedefns.length;
+
+  var light_count = 0;
+
+  for (var i = 0; i < len; i++) {
+    var device = devicedefns[i];
+    device = device.replace(/\r\n/g, '');
+    device = device.replace(/\//g, '-');
+    device = device.replace(/,,/g, ',-,');
+    var fields = device.split(",");
+    var topic = 'homeseer' + '/' + fields[4] + '/' + fields[5] + '/' + fields[3];
+    devices[fields[0]] = topic;
+    // fields[2] is status - if it's Off then 0 else 1 only publish if fields[4] = lights
+    if (fields[4] == "Lights") {
+      var value;
+      if (fields[2] == "Off") {
+        value = 0;
+      } else {
+        value = 100;
+      }
+      light_count = light_count + 1;
+      lights[topic] = value;
+      //setValue(topic, value);
+    }
+    topics[topic + '/set'] = fields[0];
+    log.info('Device:' + fields[0] + " Topic:" + topic);
+  }  
+
+  return(light_count);
+}
+
 function addCommand(command) {
   command_q.push(command + "\r\n");
+  processNextCommand();
+}
+
+function processNextCommand() {
   if (command_q.length > 0 ) {
-    log.info("Writing command to socket:" + command);
+    log.info("Writing command to socket:" + command_q[0]);
     log.info(command_q.length + " commands in the Q"); 
     socket.write(command_q[0]);
   }
