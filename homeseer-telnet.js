@@ -38,7 +38,7 @@ function connect() {
           addCommand("gs");
         } else {
           // Send an MQTT message that event has processed
-          var fields = processing.toString().split(",");
+          var fields = processed.toString().split(",");
           var topic = devices[fields[1]];
           var value = fields[2];
           log.info("Command processed republishing:" + topic + ":" + value);
