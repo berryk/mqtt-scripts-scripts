@@ -71,6 +71,8 @@ function connect() {
             log.info("Event from homeseer:" + topic + ":" + value);
             setValue(topic, value);
             // end process DC status messages
+            // resend any commands in the queue as they seem to get lost 
+            processNextCommand();
           } else {
             log.info("!! Unknown message:" + processing);
             log.info("Current command:" + command_q[0]);
