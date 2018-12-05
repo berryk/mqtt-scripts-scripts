@@ -19,7 +19,7 @@ subscribe('chromecast/' + ccname + '/player_state', function(topic, val) {
         if (roompower == 0) {
             var volume = 62;
             setValue('chromecast/' + ccname + '/command/volume_level', volume);
-            setValue('MusicCast/' + mcname + '/volume/set', 100);
+            setValue('MusicCast/' + mcname + '/volume/set', 110);
             setValue('MusicCast/' + mcname + '/input/set', mcinput);
             setValue('MusicCast/' + mcname + '/power/set', 'on');
             roompower = 1;

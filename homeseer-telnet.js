@@ -5,6 +5,8 @@ var topics = [];
 var lights = [];
 var socket;
 var command_q = [];
+var currentCommand = ""; 
+var retryCount = 0; 
 
 connect();
 
@@ -112,9 +114,11 @@ subscribe('homeseer/+/+/+/set', function(topic, val) {
   log.info(topic + ':' + val);
 
   var deviceid = topics[topic];
-  command = "cv," + deviceid + "," + val;
-  log.info("Writing Command:" + command);
-  addCommand(command);
+  if (typeof deviceid != 'undefined'){
+    command = "cv," + deviceid + "," + val;
+    log.info("Writing Command:" + command);
+    addCommand(command);
+  }
 });
 
 function process_gs(processing){
@@ -162,6 +166,17 @@ function processNextCommand() {
   if (command_q.length > 0 ) {
     log.info("Writing command to socket:" + command_q[0]);
     log.info(command_q.length + " commands in the Q"); 
+    if (currentCommand == command_q[0]){
+      retryCount = retryCount + 1; 
+      log.info("Retry number:"+retryCount);
+      if (retryCount > 5){
+        command_q.shift;
+      }
+    } else {
+      currentCommand = command_q[0];
+      retryCount = 0; 
+    }
+
     socket.write(command_q[0]);
   }
 }
