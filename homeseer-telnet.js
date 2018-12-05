@@ -114,11 +114,11 @@ subscribe('homeseer/+/+/+/set', function(topic, val) {
   log.info(topic + ':' + val);
 
   var deviceid = topics[topic];
-  if (typeof deviceid != 'undefined'){
+  //if (typeof deviceid != 'undefined'){
     command = "cv," + deviceid + "," + val;
     log.info("Writing Command:" + command);
     addCommand(command);
-  }
+  //}
 });
 
 function process_gs(processing){
