@@ -117,7 +117,11 @@ subscribe('homeseer/+/+/+/set', function(topic, val) {
   //if (typeof deviceid != 'undefined'){
     command = "cv," + deviceid + "," + val;
     log.info("Writing Command:" + command);
-    addCommand(command);
+    if(command.match("undefined")){
+      log.error("Device:"+topic+" not found, discarding message");
+    } else {
+      addCommand(command);
+    }
   //}
 });
 
@@ -170,7 +174,9 @@ function processNextCommand() {
       retryCount = retryCount + 1; 
       log.info("Retry number:"+retryCount);
       if (retryCount > 5){
+        log.info("Too many retries discarding command")
         command_q.shift;
+        retryCount = 0; 
       }
     } else {
       currentCommand = command_q[0];
