@@ -188,7 +188,7 @@ subscribe('homeseer/-/Bedroom/Master Bedroom Cans - Button D', function(topic, v
     log.info("All off no bedroom pressed, switching off all on lights except bedroom");
     var pause = 100;
     for (var i in status) {
-//      if (status[i] > 0) {
+      if (status[i] > 0) {
         
         var fields = i.split("/");
         if (fields[2] != "Bedroom"){
@@ -197,7 +197,7 @@ subscribe('homeseer/-/Bedroom/Master Bedroom Cans - Button D', function(topic, v
           setTimeout(switchoff, pause, i);
           pause = pause + 100;
         }
-//      }
+      }
     }
 
     setValue('MusicCast/basement/power/set', 'standby');
