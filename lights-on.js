@@ -19,15 +19,15 @@ function setStatus(path, value) {
   //log.info("setStatus device_count:" + device_count + " devices:" + devices);
   log.info("Path:" + path + " Value:" + value);
   if (path in alloffstatus) {
-    //if (value != alloffstatus[path]) {
+    if (value != alloffstatus[path]) {
       alloffstatus[path] = value;
       if (device_count ==  devices) {
         log.info('Calling setValue:' + path + ':' + value);
         setValue(path, value);
       }
-    //} else {
-	  //  log.info('No change in status for value:' + path + ' not publishing');
-    //}
+    } else {
+	    log.info('No change in status for value:' + path + ' not publishing');
+    }
 } else {
     alloffstatus[path] = value;
     if (device_count == devices) {
@@ -206,6 +206,7 @@ subscribe('homeseer/-/Bedroom/Master Bedroom Cans - Button D', function(topic, v
     setValue('MusicCast/family_room/power/set', 'standby');
     setValue('homeseer/MeiHarmonyHub/MeiHarmonyHub/Family Room Activities/set','-1');
     setValue('homeseer/MeiHarmonyHub/MeiHarmonyHub/Basement Hub Activities/set','-1');
+    setValue('homeseer/statusupdate','1');
   }
 });
 
@@ -228,6 +229,7 @@ subscribe('homeseer/House/House/All Off House', function(topic, val) {
     setValue('MusicCast/family_room/power/set', 'standby');
     setValue('homeseer/MeiHarmonyHub/MeiHarmonyHub/Family Room Activities/set','-1');
     setValue('homeseer/MeiHarmonyHub/MeiHarmonyHub/Basement Hub Activities/set','-1');
+    setValue('homeseer/statusupdate','1');
   }
 });
 
