@@ -186,7 +186,7 @@ function switchoff(path) {
 
 subscribe('homeseer/-/Bedroom/Master Bedroom Cans - Button D', function(topic, val) {
   log.info(topic + ':' + val);
-  if (val === 0 and totalNoBedroom > 0) {
+  if (val === 0 && totalNoBedroom > 0) {
     log.info("All off no bedroom pressed, switching off all on lights except bedroom");
     var pause = 100;
     for (var i in status) {
@@ -214,7 +214,7 @@ subscribe('homeseer/-/Bedroom/Master Bedroom Cans - Button D', function(topic, v
 
 subscribe('homeseer/House/House/All Off House', function(topic, val) {
   log.info(topic + ':' + val);
-  if (val === 0 and totalOn > 0) {
+  if (val === 0 && totalOn > 0) {
     log.info("All off activated, switching off all on lights");
     var pause = 100;
     for (var i in status) {
