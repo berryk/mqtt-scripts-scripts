@@ -11,6 +11,8 @@ var devices_off = {
   'MusicCast/dining_room/power': 'standby',
   'MusicCast/kitchen/power':  'standby',
   'MusicCast/family_room/power': 'standby',
+  'TV/basement': 'off',
+  'TV/family_room': 'off',
   'homeseer/MeiHarmonyHub/MeiHarmonyHub/Family Room Activities': '-1',
   'homeseer/MeiHarmonyHub/MeiHarmonyHub/Basement Hub Activities': '-1',
   'homeseer/statusupdate': '1',
@@ -18,6 +20,7 @@ var devices_off = {
 
 var basement_off = {
   'MusicCast/basement/power': 'standby',
+  'TV/basement': 'off',
   'homeseer/MeiHarmonyHub/MeiHarmonyHub/Basement Hub Activities': '-1',
   'homeseer/statusupdate': '1',
 };
