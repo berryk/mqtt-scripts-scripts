@@ -6,6 +6,22 @@ var count = {
   "Bedroom": 0,
 };
 
+var devices_off = {
+  'MusicCast/basement/power': 'standby',
+  'MusicCast/dining_room/power': 'standby',
+  'MusicCast/kitchen/power':  'standby',
+  'MusicCast/family_room/power': 'standby',
+  'homeseer/MeiHarmonyHub/MeiHarmonyHub/Family Room Activities': '-1',
+  'homeseer/MeiHarmonyHub/MeiHarmonyHub/Basement Hub Activities': '-1',
+  'homeseer/statusupdate': '1',
+};
+
+var basement_off = {
+  'MusicCast/basement/power': 'standby',
+  'homeseer/MeiHarmonyHub/MeiHarmonyHub/Basement Hub Activities': '-1',
+  'homeseer/statusupdate': '1',
+};
+
 var devices;
 var device_count;
 var alloffstatus = {};
@@ -40,10 +56,7 @@ function setStatus(path, value) {
 }
 
 subscribe('homeseer/Lights/#', function(topic, val) {
-  log.info(topic + ':' + val)
-
-  //device_count = device_count + 1;
-  //log.info("Device count:" + device_count)
+  log.info(topic + ':' + val);
 
   var lastCount = {};
 
@@ -64,7 +77,6 @@ subscribe('homeseer/Lights/#', function(topic, val) {
         // And now it is not 0
         if (val > 0) {
           count[fields[2]] = count[fields[2]] + 1;
-          //setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 100);
         }
       } else {
         // val was > 0 before 
@@ -75,9 +87,6 @@ subscribe('homeseer/Lights/#', function(topic, val) {
           count[fields[2]] = count[fields[2]] - 1;
           log.info(fields[2] + ' lights on: ' + count[fields[2]]);
 
-          if (count[fields[2]] === 0) {
-            //setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 0);
-          }
         } else {
           log.info('No change' + fields[2] + '\n' + 'lights on: ' + count[fields[2]]);
         }
@@ -86,66 +95,48 @@ subscribe('homeseer/Lights/#', function(topic, val) {
     } else {
       // topic doesn't exist, so cache it
      
-  	device_count = device_count + 1;
-  	log.info("Device count:" + device_count)
- 	status[topic] = val;
+  	  device_count = device_count + 1;
+  	  log.info("Device count:" + device_count)
+       status[topic] = val;
+       
       if (val > 0) {
         count[fields[2]] = count[fields[2]] + 1;
-        //setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 100);
-      } else {
-        // count[fields[2]] = count[fields[2]];
-        if (count[fields[2]] === 0) {
-         //setStatus('homeseer/House/House/All Off ' + fields[2] + '/set', 0);
-        }
       }
     }
 
+    log.info(fields[2] + ' lights on: ' + count[fields[2]]);
+    // count total lights on
+    totalOn = 0;
+    for (var i in count) {
+	    log.info(i + ' lights on:' + count[i]);
+      totalOn = totalOn + count[i];
 
-
-      log.info(fields[2] + ' lights on: ' + count[fields[2]]);
-      // count total lights on
-      totalOn = 0;
-      for (var i in count) {
-	log.info(i + ' lights on:' + count[i]);
-        totalOn = totalOn + count[i];
-
-//	if (lastCount[i] != count[i]){
-//		log.info(i + 'has changed, last count was ' + lastCount[i] + ' now it is ' + count[i]);
-		if (count[i] == 0) {
-			setStatus('homeseer/House/House/All Off ' + i + '/set',0);
-		}  
-		if (count[i] > 0 ) {
-			setStatus('homeseer/House/House/All Off ' + i + '/set',100);
-		}
-//	}
-      }
-      log.info('Total lights on:' + totalOn)
-      
-      // excluding bedroom 
-      totalNoBedroom = totalOn - count.Bedroom;
-      log.info('Total No Bedroom on:' + totalNoBedroom); 
-
-      if (totalOn === 0) {
-        setStatus('homeseer/House/House/All Off House/set', 0);
-      } else {
-        setStatus('homeseer/House/House/All Off House/set', 100);
-      }
-      
-      if (totalNoBedroom === 0) {
-        setStatus('homeseer/House/House/All Off No Bedroom/set', 0);
-      } else {
-        setStatus('homeseer/House/House/All Off No Bedroom/set', 100);
+      if (count[i] == 0) {
+        setStatus('homeseer/House/House/All Off ' + i + '/set',0);
+      }  
+      if (count[i] > 0 ) {
+        setStatus('homeseer/House/House/All Off ' + i + '/set',100);
       }
     }
+      
+    log.info('Total lights on:' + totalOn)
+      
+    // excluding bedroom 
+    totalNoBedroom = totalOn - count.Bedroom;
+    log.info('Total No Bedroom on:' + totalNoBedroom); 
 
-  //if (device_count == devices) {
-  //  log.info("Setting status for House controls");
-  //  for (var path in alloffstatus) {
-  //    log.info("Path:"+path+" Status:"+alloffstatus[path]);
-  //    setStatus(path, alloffstatus[path]);
-
-  //  }
-  //}
+    if (totalOn === 0) {
+      setStatus('homeseer/House/House/All Off House/set', 0);
+    } else {
+      setStatus('homeseer/House/House/All Off House/set', 100);
+    }
+    
+    if (totalNoBedroom === 0) {
+      setStatus('homeseer/House/House/All Off No Bedroom/set', 0);
+    } else {
+      setStatus('homeseer/House/House/All Off No Bedroom/set', 100);
+    }
+  }
 
 });
 
@@ -179,9 +170,9 @@ subscribe('homeseer/House/House/All Off No Bedroom/set', function(topic, val) {
   setValue('homeseer/-/Bedroom/Master Bedroom Cans - Button D/set', val);
 });
 
-function switchoff(path) {
+function switchoff(path,value) {
   log.info("Switching off:" + path);
-  setValue(path + '/set', 0);
+  setValue(path + '/set', value);
 }
 
 subscribe('homeseer/-/Bedroom/Master Bedroom Cans - Button D', function(topic, val) {
@@ -196,19 +187,16 @@ subscribe('homeseer/-/Bedroom/Master Bedroom Cans - Button D', function(topic, v
         if (fields[2] != "Bedroom"){
         
           log.info("Scheduling off for:" + i);
-          setTimeout(switchoff, pause, i);
+          setTimeout(switchoff, pause, i, 0);
           pause = pause + 100;
         }
       }
     }
 
-    setValue('MusicCast/basement/power/set', 'standby');
-    setValue('MusicCast/dining_room/power/set', 'standby');
-    setValue('MusicCast/kitchen/power/set', 'standby');
-    setValue('MusicCast/family_room/power/set', 'standby');
-    setValue('homeseer/MeiHarmonyHub/MeiHarmonyHub/Family Room Activities/set','-1');
-    setValue('homeseer/MeiHarmonyHub/MeiHarmonyHub/Basement Hub Activities/set','-1');
-    setValue('homeseer/statusupdate','1');
+    for (var j in devices_off){
+        setTimeout(switchoff, pause, j, devices_off[j]);
+        pause = pause + 100;
+    }
   }
 });
 
@@ -218,21 +206,39 @@ subscribe('homeseer/House/House/All Off House', function(topic, val) {
     log.info("All off activated, switching off all on lights");
     var pause = 100;
     for (var i in status) {
-//      if (status[i] > 0) {  
           log.info("Scheduling off for:" + i);
-          setTimeout(switchoff, pause, i);
+          setTimeout(switchoff, pause, i, 0);
           pause = pause + 100;
-//      }
     }
 
-    setValue('MusicCast/basement/power/set', 'standby');
-    setValue('MusicCast/dining_room/power/set', 'standby');
-    setValue('MusicCast/kitchen/power/set', 'standby');
-    setValue('MusicCast/family_room/power/set', 'standby');
-    setValue('homeseer/MeiHarmonyHub/MeiHarmonyHub/Family Room Activities/set','-1');
-    setValue('homeseer/MeiHarmonyHub/MeiHarmonyHub/Basement Hub Activities/set','-1');
-    setValue('homeseer/statusupdate','1');
+    for (var j in devices_off){
+      setTimeout(switchoff, pause, j, devices_off[j]);
+      pause = pause + 100;
+    }
   }
 });
 
+subscribe('homeseer/House/House/All Off Basement', function(topic, val) {
+  log.info(topic + ':' + val);
+  if (val === 0 &&  count["Basement"] > 0 ) {
+    log.info("All off basement pressed, switching off all basement lights");
+    var pause = 100;
+    for (var i in status) {
+      if (status[i] > 0) {
+        
+        var fields = i.split("/");
+        if (fields[2] == "Basement"){
+        
+          log.info("Scheduling off for:" + i);
+          setTimeout(switchoff, pause, i, 0);
+          pause = pause + 100;
+        }
+      }
+    }
 
+    for (var j in basement_off){
+        setTimeout(switchoff, pause, j, devices_off[j]);
+        pause = pause + 100;
+    }
+  }
+});

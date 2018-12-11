@@ -16,9 +16,9 @@ subscribe('chromecast/' + ccname + '/player_state', function(topic, val) {
     if (val == "PLAYING" || val == "BUFFERING") {
         ccplaying = 1;
         if (roompower == 0) {
-            var volume = 62;
+            var volume = 50;
             setValue('chromecast/' + ccname + '/command/volume_level', volume);
-            setValue('MusicCast/' + mcname + '/volume/set', 110);
+            setValue('MusicCast/' + mcname + '/volume/set', 120);
             setValue('MusicCast/' + mcname + '/input/set', mcinput);
             setValue('MusicCast/' + mcname + '/power/set', 'on');
             roompower = 1;

@@ -109,7 +109,7 @@ schedule('*/30 * * * *', function() {
   addCommand(command);
 });
 
-subscribe('homeseer/statusupdate', function(topic, val) {
+subscribe('homeseer/statusupdate/set', function(topic, val) {
   log.info('Getting full homeseer status update');
   command = "gs";
   addCommand(command);
