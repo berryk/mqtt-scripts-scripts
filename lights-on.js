@@ -9,6 +9,8 @@ var count = {
 var devices;
 var device_count;
 var alloffstatus = {};
+var totalOn = 0;
+var totalNoBedroom = 0;
 
 
 var status = {};
@@ -102,7 +104,7 @@ subscribe('homeseer/Lights/#', function(topic, val) {
 
       log.info(fields[2] + ' lights on: ' + count[fields[2]]);
       // count total lights on
-      var totalOn = 0;
+      totalOn = 0;
       for (var i in count) {
 	log.info(i + ' lights on:' + count[i]);
         totalOn = totalOn + count[i];
@@ -120,7 +122,7 @@ subscribe('homeseer/Lights/#', function(topic, val) {
       log.info('Total lights on:' + totalOn)
       
       // excluding bedroom 
-      var totalNoBedroom = totalOn - count.Bedroom;
+      totalNoBedroom = totalOn - count.Bedroom;
       log.info('Total No Bedroom on:' + totalNoBedroom); 
 
       if (totalOn === 0) {
@@ -184,7 +186,7 @@ function switchoff(path) {
 
 subscribe('homeseer/-/Bedroom/Master Bedroom Cans - Button D', function(topic, val) {
   log.info(topic + ':' + val);
-  if (val === 0) {
+  if (val === 0 and totalNoBedroom > 0) {
     log.info("All off no bedroom pressed, switching off all on lights except bedroom");
     var pause = 100;
     for (var i in status) {
@@ -212,7 +214,7 @@ subscribe('homeseer/-/Bedroom/Master Bedroom Cans - Button D', function(topic, v
 
 subscribe('homeseer/House/House/All Off House', function(topic, val) {
   log.info(topic + ':' + val);
-  if (val === 0) {
+  if (val === 0 and totalOn > 0) {
     log.info("All off activated, switching off all on lights");
     var pause = 100;
     for (var i in status) {
