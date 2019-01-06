@@ -21,8 +21,8 @@ subscribe('chromecast/' + ccname + '/player_state', function(topic, val) {
             setValue('chromecast/' + ccname + '/command/volume_level', volume);
             setValue('homeseer/MeiHarmonyHub/MeiHarmonyHub/Family Room Activities/set',harmonyActivity);
             setValue('MusicCast/' + mcname + '/volume/set', 100);
-            //setValue('MusicCast/' + mcname + '/input/set', mcinput);
-            //setValue('MusicCast/' + mcname + '/power/set', 'on');
+            setValue('MusicCast/' + mcname + '/input/set', mcinput);
+            setValue('MusicCast/' + mcname + '/power/set', 'on');
             roompower = 1;
         }
 
@@ -36,8 +36,8 @@ subscribe('chromecast/' + ccname + '/player_state', function(topic, val) {
             timeoutObj = setTimeout(function() {
                 log.info("Time out, turning off");
                 roompower = 0;
-                setValue('homeseer/MeiHarmonyHub/MeiHarmonyHub/Family Room Activities/set','-1');
-                //setValue('MusicCast/' + mcname + '/power/set', 'standby');
+                //setValue('homeseer/MeiHarmonyHub/MeiHarmonyHub/Family Room Activities/set','-1');
+                setValue('MusicCast/' + mcname + '/power/set', 'standby');
             }, 300000);
 
             ccplaying = 0;
