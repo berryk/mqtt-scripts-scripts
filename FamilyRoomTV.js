@@ -6,7 +6,8 @@ var tvOn = {
     "av2": "on",
     "av3": "on",
     "av4": "on",
-    "av5": "on"
+    "av5": "on",
+    "av6": "on"
 };
 
 subscribe('MusicCast/family_room/power', function(topic, val) {
