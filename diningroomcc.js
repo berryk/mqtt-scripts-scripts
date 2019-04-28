@@ -3,6 +3,7 @@ var roompower = 0;
 var timerrunning = 0;
 var volume_mult = 1.6;
 
+var mcvolume = 125;
 var ccname = 'Dining Room Speakers';
 var mcname = 'dining_room';
 var mcinput = 'audio3';
@@ -18,7 +19,7 @@ subscribe('chromecast/' + ccname + '/player_state', function(topic, val) {
         if (roompower == 0) {
             var volume = 50;
             setValue('chromecast/' + ccname + '/command/volume_level', volume);
-            setValue('MusicCast/' + mcname + '/volume/set', 125);
+            setValue('MusicCast/' + mcname + '/volume/set', mcvolume);
             setValue('MusicCast/' + mcname + '/input/set', mcinput);
             setValue('MusicCast/' + mcname + '/power/set', 'on');
             roompower = 1;
@@ -46,4 +47,25 @@ subscribe('chromecast/' + ccname + '/volume_level', function(topic, val) {
     log.info(topic + ':' + val);
 
     //setValue('MusicCast/' + mcname + '/volume/set', val * volume_mult);
+})
+
+subscribe('homeseer/Chromecast/Volume/' + ccname, function(topic, val) {
+    log.info(topic + ':' + val);
+
+    mcvolume = val;
+    setValue('MusicCast/' + mcname + '/volume/set', val);
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
