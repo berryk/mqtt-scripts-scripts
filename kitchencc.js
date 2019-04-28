@@ -57,20 +57,3 @@ subscribe('homeseer/Chromecast/Volume/' + ccname, function(topic, val) {
     mcvolume = val;
     setValue('MusicCast/' + mcname + '/volume/set', val);
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

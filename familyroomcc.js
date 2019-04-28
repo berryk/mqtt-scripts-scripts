@@ -3,6 +3,7 @@ var roompower = 0;
 var timerrunning = 0;
 var volume_mult = 1.6;
 
+var mcvolume = 125;
 var ccname = 'Family Room Speakers';
 var mcname = 'family_room';
 var mcinput = 'audio2';
@@ -20,7 +21,7 @@ subscribe('chromecast/' + ccname + '/player_state', function(topic, val) {
             var volume = 50;
             setValue('chromecast/' + ccname + '/command/volume_level', volume);
             setValue('homeseer/MeiHarmonyHub/MeiHarmonyHub/Family Room Activities/set',harmonyActivity);
-            setValue('MusicCast/' + mcname + '/volume/set', 125);
+            setValue('MusicCast/' + mcname + '/volume/set', mcvolume);
             setValue('MusicCast/' + mcname + '/input/set', mcinput);
             setValue('MusicCast/' + mcname + '/power/set', 'on');
             roompower = 1;
@@ -65,7 +66,7 @@ subscribe('homeseer/MeiHarmonyHub/MeiHarmonyHub/Family Room Activities', functio
     log.info(topic + ':' + val);
 
     if(val != harmonyActivity) {
-        roompower = 0; 
+        roompower = 0;
         log.info("Clearing timeout");
         clearTimeout(timeoutObj);
     }
@@ -79,4 +80,11 @@ subscribe('MusicCast/' + mcname + '/input', function(topic, val) {
         log.info("Clearing timeout");
         clearTimeout(timeoutObj);
     }
+});
+
+subscribe('homeseer/Chromecast/Volume/' + ccname, function(topic, val) {
+    log.info(topic + ':' + val);
+
+    mcvolume = val;
+    setValue('MusicCast/' + mcname + '/volume/set', val);
 });
